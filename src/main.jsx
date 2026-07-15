@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ArrowLeft, Search, Sparkles, TrendingUp, Users } from 'lucide-react'
+import { ArrowLeft, Check, MessageCircle, Search, Send, Sparkles, TrendingUp, UserPlus, Users } from 'lucide-react'
 import { categories, influencers } from './data'
 import './style.css'
 
@@ -32,7 +32,19 @@ function Navbar({ onHome }) {
   )
 }
 
-function InfluencerCard({ influencer, onSelect }) {
+function FollowButton({ isFollowing, onToggle, compact = false }) {
+  return (
+    <button
+      onClick={onToggle}
+      className={`inline-flex items-center justify-center gap-2 rounded-2xl font-bold transition ${compact ? 'px-3 py-2 text-xs' : 'px-4 py-3 text-sm'} ${isFollowing ? 'bg-pink-50 text-pink-600 ring-1 ring-pink-100 hover:bg-pink-100' : 'bg-slate-950 text-white hover:bg-gradient-to-r hover:from-pink-500 hover:to-violet-600'}`}
+    >
+      {isFollowing ? <Check size={16} /> : <UserPlus size={16} />}
+      {isFollowing ? '已关注' : '关注'}
+    </button>
+  )
+}
+
+function InfluencerCard({ influencer, onSelect, isFollowing, onToggleFollow }) {
   return (
     <article className="group overflow-hidden rounded-3xl border border-white/70 bg-white/85 p-5 shadow-xl shadow-slate-200/60 transition hover:-translate-y-1 hover:shadow-glow">
       <div className="flex items-start gap-4">
@@ -46,14 +58,17 @@ function InfluencerCard({ influencer, onSelect }) {
         </div>
       </div>
       <p className="mt-5 min-h-16 text-sm leading-7 text-slate-600">{influencer.bio}</p>
-      <button onClick={() => onSelect(influencer)} className="mt-5 w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm font-bold text-white transition group-hover:bg-gradient-to-r group-hover:from-pink-500 group-hover:to-violet-600">
-        查看个人主页
-      </button>
+      <div className="mt-5 grid grid-cols-[1fr_auto] gap-3">
+        <button onClick={() => onSelect(influencer)} className="rounded-2xl bg-slate-950 px-4 py-3 text-sm font-bold text-white transition group-hover:bg-gradient-to-r group-hover:from-pink-500 group-hover:to-violet-600">
+          查看个人主页
+        </button>
+        <FollowButton isFollowing={isFollowing} onToggle={onToggleFollow} compact />
+      </div>
     </article>
   )
 }
 
-function HomePage({ onSelect }) {
+function HomePage({ onSelect, followingIds, onToggleFollow }) {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('全部')
   const filtered = useMemo(() => influencers.filter((item) => {
@@ -92,21 +107,64 @@ function HomePage({ onSelect }) {
           </div>
         </div>
         <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((item) => <InfluencerCard key={item.id} influencer={item} onSelect={onSelect} />)}
+          {filtered.map((item) => <InfluencerCard key={item.id} influencer={item} onSelect={onSelect} isFollowing={followingIds.includes(item.id)} onToggleFollow={() => onToggleFollow(item.id)} />)}
         </div>
       </section>
     </main>
   )
 }
 
-function ProfilePage({ influencer, onBack }) {
+function ChatBox({ influencer }) {
+  const [message, setMessage] = useState('')
+  const [messages, setMessages] = useState([
+    { from: influencer.name, text: `你好，我是${influencer.name}，欢迎聊聊合作方向～` },
+    { from: '平台助手', text: '你可以发送预算、档期或内容需求，达人会尽快回复。' },
+  ])
+
+  const handleSend = (event) => {
+    event.preventDefault()
+    const trimmed = message.trim()
+    if (!trimmed) return
+    setMessages((current) => [...current, { from: '我', text: trimmed }])
+    setMessage('')
+  }
+
+  return (
+    <aside className="rounded-3xl border border-pink-100 bg-white p-5 shadow-xl shadow-slate-200/70">
+      <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-pink-50 text-pink-600"><MessageCircle size={20} /></span>
+        <div>
+          <h2 className="font-black text-slate-950">私信沟通</h2>
+          <p className="text-sm text-slate-500">在线咨询合作、报价与档期</p>
+        </div>
+      </div>
+      <div className="mt-4 max-h-72 space-y-3 overflow-y-auto pr-1">
+        {messages.map((item, index) => (
+          <div key={`${item.from}-${index}`} className={`rounded-2xl p-3 text-sm leading-6 ${item.from === '我' ? 'ml-8 bg-gradient-to-r from-pink-500 to-violet-600 text-white' : 'mr-8 bg-slate-100 text-slate-600'}`}>
+            <strong className="mb-1 block text-xs opacity-80">{item.from}</strong>
+            {item.text}
+          </div>
+        ))}
+      </div>
+      <form onSubmit={handleSend} className="mt-4 flex gap-2">
+        <input value={message} onChange={(event) => setMessage(event.target.value)} placeholder="输入你的合作需求..." className="min-w-0 flex-1 rounded-2xl bg-slate-100 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-pink-200" />
+        <button className="grid h-12 w-12 place-items-center rounded-2xl bg-slate-950 text-white transition hover:bg-pink-500" aria-label="发送消息"><Send size={18} /></button>
+      </form>
+    </aside>
+  )
+}
+
+function ProfilePage({ influencer, onBack, isFollowing, onToggleFollow }) {
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <button onClick={onBack} className="mb-6 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 font-semibold text-slate-700 shadow hover:text-pink-600"><ArrowLeft size={18} />返回列表</button>
       <section className="overflow-hidden rounded-[2rem] bg-white shadow-2xl shadow-slate-200">
         <div className="h-36 bg-gradient-to-r from-pink-400 via-fuchsia-500 to-violet-700" />
         <div className="px-6 pb-8 sm:px-10">
-          <img className="-mt-16 h-32 w-32 rounded-[2rem] border-4 border-white object-cover shadow-xl" src={influencer.avatar} alt={`${influencer.name} 头像`} />
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <img className="-mt-16 h-32 w-32 rounded-[2rem] border-4 border-white object-cover shadow-xl" src={influencer.avatar} alt={`${influencer.name} 头像`} />
+            <FollowButton isFollowing={isFollowing} onToggle={onToggleFollow} />
+          </div>
           <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_340px]">
             <div>
               <span className="rounded-full bg-pink-50 px-3 py-1 text-sm font-bold text-pink-600">{influencer.category}</span>
@@ -121,11 +179,14 @@ function ProfilePage({ influencer, onBack }) {
           </div>
         </div>
       </section>
-      <section id="works" className="mt-8">
-        <h2 className="text-2xl font-black text-slate-950">代表作品</h2>
-        <div className="mt-5 grid gap-5 md:grid-cols-3">
-          {influencer.works.map((work, index) => <div key={work} className="rounded-3xl bg-white p-6 shadow-xl shadow-slate-200/70"><span className="text-sm font-bold text-pink-500">作品 0{index + 1}</span><h3 className="mt-4 text-xl font-black text-slate-900">{work}</h3><p className="mt-3 text-sm leading-6 text-slate-500">短视频、图文与直播片段组合展示，适合品牌快速评估内容风格。</p></div>)}
+      <section className="mt-8 grid gap-6 lg:grid-cols-[1fr_360px]">
+        <div id="works">
+          <h2 className="text-2xl font-black text-slate-950">代表作品</h2>
+          <div className="mt-5 grid gap-5 md:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+            {influencer.works.map((work, index) => <div key={work} className="rounded-3xl bg-white p-6 shadow-xl shadow-slate-200/70"><span className="text-sm font-bold text-pink-500">作品 0{index + 1}</span><h3 className="mt-4 text-xl font-black text-slate-900">{work}</h3><p className="mt-3 text-sm leading-6 text-slate-500">短视频、图文与直播片段组合展示，适合品牌快速评估内容风格。</p></div>)}
+          </div>
         </div>
+        <ChatBox influencer={influencer} />
       </section>
     </main>
   )
@@ -137,7 +198,12 @@ function Data({ label, value }) {
 
 function App() {
   const [selected, setSelected] = useState(null)
-  return <><Navbar onHome={() => setSelected(null)} />{selected ? <ProfilePage influencer={selected} onBack={() => setSelected(null)} /> : <HomePage onSelect={setSelected} />}<footer className="px-4 py-10 text-center text-sm text-slate-500">© 2026 人人网红平台 · 连接品牌与优质创作者</footer></>
+  const [followingIds, setFollowingIds] = useState([])
+  const toggleFollow = (id) => {
+    setFollowingIds((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id])
+  }
+
+  return <><Navbar onHome={() => setSelected(null)} />{selected ? <ProfilePage influencer={selected} onBack={() => setSelected(null)} isFollowing={followingIds.includes(selected.id)} onToggleFollow={() => toggleFollow(selected.id)} /> : <HomePage onSelect={setSelected} followingIds={followingIds} onToggleFollow={toggleFollow} />}<footer className="px-4 py-10 text-center text-sm text-slate-500">© 2026 人人网红平台 · 连接品牌与优质创作者</footer></>
 }
 
 createRoot(document.getElementById('root')).render(<App />)
