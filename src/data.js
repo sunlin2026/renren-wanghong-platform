@@ -1,4 +1,17 @@
-export const categories = ['全部', '美妆', '美食', '旅行', '科技', '健身']
+export const roles = [
+  { id: 'brand', label: '品牌账号', description: '发布需求、筛选达人、发起合作与私信沟通' },
+  { id: 'influencer', label: '网红账号', description: '维护主页、上传作品、查看品牌合作邀请' },
+  { id: 'user', label: '普通用户', description: '浏览达人内容、关注喜欢的创作者' },
+]
+
+export const categories = ['全部', '美妆', '美食', '旅行', '科技', '健身', '穿搭']
+
+export const followerFilters = [
+  { label: '全部粉丝量', min: 0 },
+  { label: '100万+', min: 1000000 },
+  { label: '200万+', min: 2000000 },
+  { label: '300万+', min: 3000000 },
+]
 
 export const influencers = [
   {
@@ -7,11 +20,14 @@ export const influencers = [
     category: '美妆',
     followers: 2860000,
     growth: '+12.8%',
+    price: 68000,
+    availability: '7 月下旬可排期',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=500&q=80',
     bio: '专注通勤妆、国货测评与敏感肌护理，用真实体验帮粉丝少踩雷。',
     intro: 'Luna 是平台头部美妆达人，擅长把专业护肤知识转化为易懂的日常建议。她的内容覆盖新品测评、妆容教程、直播种草和品牌联名企划。',
     stats: { likes: '1.2亿', posts: 428, engagement: '8.7%' },
     works: ['夏日清透底妆', '国货精华横评', '三分钟通勤眼妆'],
+    tags: ['护肤', '测评', '直播种草'],
   },
   {
     id: 'chef-hao',
@@ -19,11 +35,14 @@ export const influencers = [
     category: '美食',
     followers: 1930000,
     growth: '+9.4%',
+    price: 42000,
+    availability: '本周可沟通脚本',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=500&q=80',
     bio: '用家常食材复刻城市烟火味，主打高成功率菜谱和厨房小技巧。',
     intro: '阿浩用温暖镜头记录家庭餐桌，把复杂菜式拆成清晰步骤，深受年轻上班族与新手爸妈欢迎。',
     stats: { likes: '7600万', posts: 316, engagement: '7.9%' },
     works: ['一锅番茄牛腩', '早餐七日计划', '夜市小吃复刻'],
+    tags: ['食谱', '家庭消费', '烟火气'],
   },
   {
     id: 'mika-travel',
@@ -31,11 +50,14 @@ export const influencers = [
     category: '旅行',
     followers: 3420000,
     growth: '+18.2%',
+    price: 88000,
+    availability: '支持目的地共创',
     avatar: 'https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=500&q=80',
     bio: '城市漫游与小众路线策划者，分享预算、机位、路线和真实体验。',
     intro: 'Mika 的旅行内容兼具视觉质感与实用攻略，擅长为品牌打造目的地营销与沉浸式短片。',
     stats: { likes: '1.8亿', posts: 512, engagement: '9.3%' },
     works: ['云南慢旅行', '东京咖啡地图', '海岛拍照指南'],
+    tags: ['目的地营销', '攻略', '高质感短片'],
   },
   {
     id: 'neo-tech',
@@ -43,11 +65,14 @@ export const influencers = [
     category: '科技',
     followers: 1580000,
     growth: '+7.1%',
+    price: 52000,
+    availability: '需提前 10 天寄样',
     avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=500&q=80',
     bio: '数码产品评测、AI 工具效率指南与智能家居体验分享。',
     intro: 'Neo 以客观参数和生活场景结合的方式评测产品，内容覆盖手机、电脑、可穿戴设备与效率软件。',
     stats: { likes: '5200万', posts: 274, engagement: '6.8%' },
     works: ['旗舰手机盲测', 'AI 办公流', '桌面改造清单'],
+    tags: ['数码评测', 'AI 工具', '效率'],
   },
   {
     id: 'yoyo-fit',
@@ -55,22 +80,39 @@ export const influencers = [
     category: '健身',
     followers: 2210000,
     growth: '+14.6%',
+    price: 56000,
+    availability: '可做社群挑战',
     avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=500&q=80',
     bio: '居家训练、体态改善和健康饮食，陪伴粉丝建立可持续运动习惯。',
     intro: 'Yoyo 的训练计划强调低门槛与长期坚持，通过直播打卡、社群挑战和科学饮食建议提升粉丝参与度。',
     stats: { likes: '9800万', posts: 365, engagement: '10.1%' },
     works: ['21 天塑形挑战', '办公室拉伸', '高蛋白轻食'],
+    tags: ['运动健康', '社群挑战', '轻食'],
   },
   {
     id: 'ran-style',
     name: '然然穿搭志',
-    category: '美妆',
+    category: '穿搭',
     followers: 1760000,
     growth: '+8.9%',
+    price: 39000,
+    availability: '支持单品挂链',
     avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=500&q=80',
     bio: '小个子穿搭、色彩搭配和胶囊衣橱，倡导高质感日常风格。',
     intro: '然然以亲切审美和高转化带货能力著称，帮助粉丝用有限单品搭出更多造型。',
     stats: { likes: '6900万', posts: 289, engagement: '7.4%' },
     works: ['春季胶囊衣橱', '小个子显高公式', '约会穿搭灵感'],
+    tags: ['穿搭', '电商转化', '女性消费'],
   },
+]
+
+export const collaborationInvites = [
+  { id: 1, brand: '花漾护肤', campaign: '新品精华首发测评', budget: '¥80,000', status: '待确认', due: '2026-07-22' },
+  { id: 2, brand: '自在旅行局', campaign: '夏季海岛目的地短片', budget: '¥120,000', status: '脚本沟通中', due: '2026-08-03' },
+  { id: 3, brand: '轻燃能量饮', campaign: '21 天运动打卡挑战', budget: '¥65,000', status: '已接受', due: '2026-07-28' },
+]
+
+export const seededMessages = [
+  { id: 1, from: '花漾护肤品牌经理', text: '我们想做敏感肌新品种草，请问本月还有档期吗？', time: '09:42' },
+  { id: 2, from: 'Luna 小鹿', text: '可以的，请先发产品资料与核心卖点，我来评估脚本方向。', time: '09:45' },
 ]
